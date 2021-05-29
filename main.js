@@ -3,7 +3,7 @@ const Player = ((val) => {
     this.value = val;
 
     const getSign = () => {
-        return value;
+        return val;
     }
     return { getSign };
 });
@@ -24,7 +24,7 @@ const gameBoard = (() => {
         }
     };
     return { setField, getField, reset };
-});
+})();
 
 
 const displayController = (() => {
@@ -33,8 +33,7 @@ const displayController = (() => {
     const resetBtn = document.getElementById('reset');
     squares.forEach(square => {
         square.addEventListener('click', (e) => {
-            if (e.target.textContent !== "") return;
-            console.log('REEE');
+            if (e.target.textContent != "") return;
             gameController.playRound(parseInt(e.target.dataset.index));
             updateGameboard();
         });
@@ -50,10 +49,14 @@ const displayController = (() => {
             squares[i].textContent = gameBoard.getField(i);
         }
     }
-    const setResultMessage = () => { };
-    const setMessageElement = () => { };
+    const setResultMessage = (winner) => {
 
-});
+    };
+    const setMessageElement = (text) => {
+        msg.textContent = text;
+    };
+    return { setMessageElement, setMessageElement, updateGameboard }
+})();
 
 const gameController = (() => {
     const playerX = Player("X");
@@ -61,14 +64,22 @@ const gameController = (() => {
     let round = 1;
     let isOver = false;
 
-    const playRound = () => { };
+    const playRound = (index) => {
+        gameBoard.setField(index, getCurrentPlayerVal());
+        round = round + 1;
+        displayController.setMessageElement(`Player ${getCurrentPlayerVal()}'s Turn`);
+    };
     const getCurrentPlayerVal = () => {
         return round % 2 === 1 ? playerX.getSign() : playerO.getSign();
     };
     const checkWinner = () => { };
     const getIsOver = () => { };
-    const reset = () => { };
-});
+    const reset = () => {
+        round = 1;
+        isOver = false;
+    };
+    return { playRound, reset };
+})();
 
 
 
