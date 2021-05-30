@@ -50,12 +50,17 @@ const displayController = (() => {
         }
     }
     const setResultMessage = (winner) => {
-
+        if (winner == 'Draw') {
+            setMessageElement(`The Game is a ${winner}`);
+        }
+        else {
+            setMessageElement(`The Winner is ${winner}`);
+        }
     };
     const setMessageElement = (text) => {
         msg.textContent = text;
     };
-    return { setMessageElement, setMessageElement, updateGameboard }
+    return { setMessageElement, setResultMessage, updateGameboard }
 })();
 
 const gameController = (() => {
@@ -65,15 +70,52 @@ const gameController = (() => {
     let isOver = false;
 
     const playRound = (index) => {
-        gameBoard.setField(index, getCurrentPlayerVal());
-        round = round + 1;
-        displayController.setMessageElement(`Player ${getCurrentPlayerVal()}'s Turn`);
+        if (!isOver) {
+            gameBoard.setField(index, getCurrentPlayerVal());
+            if (!checkWinner()) {
+                round = round + 1;
+                displayController.setMessageElement(`Player ${getCurrentPlayerVal()}'s Turn`);
+            }
+            if (round == 10) {
+                displayController.setResultMessage('Draw');
+            }
+        }
     };
     const getCurrentPlayerVal = () => {
         return round % 2 === 1 ? playerX.getSign() : playerO.getSign();
     };
-    const checkWinner = () => { };
-    const getIsOver = () => { };
+    const checkWinner = () => {
+        const winOptions = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ]
+        let winCon = false;
+        winOptions.forEach(winSet => {
+            if (
+                gameBoard.getField(winSet[0]) == gameBoard.getField(winSet[1])
+                &&
+                gameBoard.getField(winSet[2]) == gameBoard.getField(winSet[0])
+                &&
+                gameBoard.getField(winSet[2]) == gameBoard.getField(winSet[1])
+                &&
+                gameBoard.getField(winSet[2]) != ""
+            ) {
+                winCon = true;
+            }
+        });
+        if (winCon) {
+            displayController.setResultMessage(getCurrentPlayerVal());
+            isOver = true;
+            return true;
+        }
+        return false;
+    };
     const reset = () => {
         round = 1;
         isOver = false;
