@@ -23,7 +23,16 @@ const gameBoard = (() => {
             board[i] = "";
         }
     };
-    return { setField, getField, reset };
+    const availSpots = () => {
+        var indices = [];
+        for (let i = 0; i < board.length; i++) {
+            if (board[i] == "") {
+                indices.push(i);
+            }
+        }
+        return indices;
+    };
+    return { setField, getField, reset, availSpots };
 })();
 
 
@@ -75,10 +84,16 @@ const gameController = (() => {
             if (!checkWinner()) {
                 round = round + 1;
                 displayController.setMessageElement(`Player ${getCurrentPlayerVal()}'s Turn`);
+
             }
             if (round == 10) {
                 displayController.setResultMessage('Draw');
             }
+            if (round % 2 == 0) {
+
+                playRound(computerController.compChoice());
+            }
+
         }
     };
     const getCurrentPlayerVal = () => {
@@ -123,6 +138,17 @@ const gameController = (() => {
     return { playRound, reset };
 })();
 
+
+const computerController = (() => {
+
+    const compChoice = () => {
+        var choice = Math.floor((Math.random() * gameBoard.availSpots().length));
+        console.log(choice);
+        return gameBoard.availSpots()[choice];
+    };
+    return { compChoice }
+
+})();
 
 
 
