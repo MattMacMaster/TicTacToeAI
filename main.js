@@ -78,7 +78,7 @@ const gameController = (() => {
     let round = 1;
     let isOver = false;
 
-    const playRound = (index) => {
+    const playRound = async (index) => {
         if (!isOver) {
             gameBoard.setField(index, getCurrentPlayerVal());
             if (!checkWinner()) {
@@ -90,7 +90,6 @@ const gameController = (() => {
                 displayController.setResultMessage('Draw');
             }
             if (round % 2 == 0) {
-
                 playRound(computerController.compChoice());
             }
 
@@ -151,4 +150,6 @@ const computerController = (() => {
 })();
 
 
-
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}

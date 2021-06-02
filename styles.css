@@ -1,40 +1,60 @@
 html {
-    background-color: grey;
+    background-color: lightskyblue;
     font: "Varela Round", sans-serif;
 }
 .message {
     text-align: center;
-    margin-bottom: 15px;
+    font-size: 400%;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 .gameboard {
     text-align: center;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    width: 454px;
-    height: 454px;
-    border: 2px solid black;
-    margin: 0px auto;
+    border: 5px solid black;
+    margin: auto 35% auto;
 }
-.restartBtn {
-    text-align: center;
-    margin-top: 15px;
-    cursor: pointer;
 
-}
+.restart-button {
+    margin-top: 5px;
+    padding: 10px 20px;
+    border: 3px solid #2a3a46;
+    border-radius: 7px;
+    background-color: #4c5c68;
+    color: #b0e4db;
+    font-size: 5rem;
+  }
+  .restart-button:hover {
+    background-color: #3b4b57;
+  }
+  
+  .restart-button:active {
+    background-color: #2a3a46;
+  }
+  
+  .restart-button:focus {
+    outline: none;
+  }
 h1 {
     text-align: center;
-    background-color: indianred;
-    border-color: indigo;
-    border: 2px solid purple;
+    background-color: lightblue;
+    margin-top: -15px;
+    font-size:600%;
+    border-color: blue;
+    border: 5px double blue;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     width: 100%;
+    margin-left: -50px;
+    padding-left: 60px;
 }
 .field {
-    border-color: black;
     display: block;
-    text-align: center;
-    height: 150px;
-    width: 150px;
-    font-size: 10rem;
+    text-align:center;
+    line-height: 230%;
+    height: 16rem;
+    font-size:6em;
     cursor: pointer;
+    border: black solid 1px;
     background-color: white;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
