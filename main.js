@@ -9,7 +9,7 @@ const Player = ((val) => {
 });
 
 const gameBoard = (() => {
-    const board = ["", "", "", "", "", "", "", "", ""];
+    const board = ["O", "X", "O", "X", "X", "O", "", "", ""];
     const setField = (index, val) => {
         if (index > board.length) return;
         board[index] = val;
@@ -23,6 +23,8 @@ const gameBoard = (() => {
             board[i] = "";
         }
     };
+    const returnBoard = () => { return board };
+    const clearIndex = (index) => { board[index] = "" };
     const availSpots = () => {
         var indices = [];
         for (let i = 0; i < board.length; i++) {
@@ -32,7 +34,7 @@ const gameBoard = (() => {
         }
         return indices;
     };
-    return { setField, getField, reset, availSpots };
+    return { setField, getField, reset, availSpots, returnBoard, clearIndex };
 })();
 
 
@@ -90,7 +92,8 @@ const gameController = (() => {
                 displayController.setResultMessage('Draw');
             }
             if (round % 2 == 0) {
-                playRound(computerController.compChoice());
+
+                playRound(computerController.best_move());
             }
 
         }
@@ -133,23 +136,122 @@ const gameController = (() => {
     const reset = () => {
         round = 1;
         isOver = false;
-    };
-    return { playRound, reset };
+    }
+
+    return { playRound, reset, getCurrentPlayerVal };
 })();
 
 
 const computerController = (() => {
-
-    const compChoice = () => {
+    //Use this function insetead of the best move function for simply random choices
+    const compRandChoice = () => {
         var choice = Math.floor((Math.random() * gameBoard.availSpots().length));
-        console.log(choice);
         return gameBoard.availSpots()[choice];
     };
-    return { compChoice }
+    const checkWinnerAI = (board) => {
+        const winOptions = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+        winOptions.forEach(winSet => {
+            if (board[winSet[0]] == board[winSet[1]] &&
+                board[winSet[2]] == board[winSet[0]] &&
+                board[winSet[2]] == board[winSet[1]] &&
+                board[winSet[2]] != ""
+            ) {
+                if (board[winSet[0]] == "O") {
+                    //1 Means AI Wins
+                    return 1;
+                }
+                else {
+                    //2 Means Player Wins
+                    return 2;
+                }
+            };
+        });
+        //3 Means a Tie
+        //Null means game goes on with more choices to be made
+        if (board.includes("")) { return null } else return 3;
+    };
+
+    const availableIndexes = (board) => {
+        var indexes = [];
+        for (let i = 0; i < board.length; i++) {
+            if (board[i] == "") {
+                indexes.push(i);
+            }
+        }
+        return indexes;
+    };
+
+    const best_move = () => {
+        let bestScore = -Infinity;
+        let bestMove;
+        let tempBoard = Array.from(gameBoard.returnBoard());
+
+        gameBoard.availSpots().forEach((index) => {
+            tempBoard[index] = "O";
+            let score = minimax(false, tempBoard, 0);
+            tempBoard[index] = "";
+            console.log(`Score:${score}`);
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestMove = index;
+            };
+        });
+        return bestMove;
+    };
+
+
+    const minimax = (isMaxTurn, board, depth) => {
+        let currBoard = board;
+        const result = checkWinnerAI(currBoard);
+        console.log(currBoard);
+
+        if (result == 2) {
+            return -1;
+        }
+        else if (result == 1) {
+            return 1;
+        }
+        else if (result == 3) {
+
+            return 0;
+        }
+        else {
+            if (isMaxTurn) {
+                let bestScore = -Infinity;
+                availableIndexes(currBoard).forEach((index) => {
+                    currBoard[index] = "O";
+                    let score = minimax(!isMaxTurn, currBoard, depth + 1);
+                    currBoard[index] = "";
+                    bestScore = Math.max(score, bestScore);
+                });
+                return bestScore;
+            } else {
+                let bestScore = Infinity;
+                availableIndexes(currBoard).forEach((index) => {
+                    currBoard[index] = "X";
+                    let score = minimax(!isMaxTurn, currBoard, depth + 1);
+                    currBoard[index] = "";
+                    bestScore = Math.min(score, bestScore);
+                });
+                return bestScore;
+            };
+
+        }
+    };
+
+    return { best_move, compRandChoice }
 
 })();
 
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+displayController.updateGameboard();
