@@ -10,8 +10,8 @@ const Player = ((val) => {
 
 const gameBoard = (() => {
     let board = [
-        ['X', 'O', ''],
-        ['X', 'O', ''],
+        ['', '', ''],
+        ['', '', ''],
         ['', '', '']
     ];
     const setField = (index, val) => {
