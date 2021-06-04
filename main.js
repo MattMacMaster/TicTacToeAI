@@ -89,7 +89,7 @@ const displayController = (() => {
             gameBoard.reset();
             gameController.reset();
             updateGameboard();
-            setMessageElement("Player X's turn");
+            setMessageElement("Player X's Turn");
         });
     });
     const updateGameboard = () => {
