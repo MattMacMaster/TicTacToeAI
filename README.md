@@ -6,3 +6,6 @@ The AI utilizes the [minimax algorithm](https://en.wikipedia.org/wiki/Minimax), 
 # Tools
 HTML, CSS, Javascipt, Windows 10, Visual Studio Code - Live Server Extension
 
+# TODOS
+Some minor styling fixes - scaling sizes!
+Maybye add a computer choice delay

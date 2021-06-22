@@ -1,3 +1,16 @@
+const aiButton = document.getElementById('ai');
+const humanButton = document.getElementById('human');
+humanButton.addEventListener('click', (e) => {
+    gameController.setPlayers(e.target.dataset.value);
+});
+aiButton.addEventListener('click', (e) => {
+    gameController.setPlayers(e.target.dataset.value);
+});
+let isOver = false;
+// false is Human game, True is an AI game
+let gameType = false;
+aiButton.classList.remove('disabled');
+humanButton.classList.add('disabled');
 
 const Player = ((val) => {
     this.value = val;
@@ -115,15 +128,15 @@ const gameController = (() => {
     const playerX = Player("X");
     const playerO = Player("O");
     let round = 1;
-    let isOver = false;
 
+    //Round to be played
     const playRound = (index) => {
+        //has the game finished
         if (!isOver) {
             gameBoard.setField(index, getCurrentPlayerVal());
 
             let result = checkWinner();
             if (result == "tie") {
-                console.log();
                 displayController.setResultMessage('Draw');
                 isOver = true;
 
@@ -132,7 +145,7 @@ const gameController = (() => {
             if (!result) {
                 displayController.setMessageElement(`Player ${getCurrentPlayerVal()}'s Turn`);
             };
-            if (round % 2 == 0) {
+            if (round % 2 == 0 && gameType) {
                 playRound(bestMove(gameBoard.returnBoard()));
             };
         }
@@ -140,16 +153,38 @@ const gameController = (() => {
 
 
     };
+    //Gets what players turn it is based on round
     const getCurrentPlayerVal = () => {
         return round % 2 === 1 ? playerX.getSign() : playerO.getSign();
     };
-
+    // resets disable, and round count
     const reset = () => {
         round = 1;
         isOver = false;
     }
+    const setPlayers = (value) => {
+        if (value == 0) {
+            aiButton.disabled = false;
+            humanButton.disabled = true;
+            gameType = true;
+            aiButton.classList.remove('disabled');
+            humanButton.classList.add('disabled');
 
-    return { playRound, reset, getCurrentPlayerVal };
+
+        } else {
+            humanButton.disabled = false;
+            aiButton.disabled = true;
+            gameType = false;
+            humanButton.classList.remove('disabled');
+            aiButton.classList.add('disabled');
+        }
+        gameType = !gameType;
+        reset();
+        gameBoard.reset();
+        displayController.updateGameboard();
+    };
+
+    return { playRound, reset, getCurrentPlayerVal, setPlayers };
 })();
 
 
@@ -177,6 +212,7 @@ function checkWinner() {
             &&
             gameBoard.getField(winSet[2]) != ""
         ) {
+            isOver = true;
             winCon = gameController.getCurrentPlayerVal();
         }
     });
@@ -190,4 +226,3 @@ function checkWinner() {
     }
     return winCon;
 };
-displayController.updateGameboard();
