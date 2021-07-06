@@ -72,6 +72,7 @@ function bestMove(board) {
             if (board[i][j] == '') {
                 board[i][j] = "O";
                 let score = minimax(board, 0, false);
+                console.log(score);
                 board[i][j] = '';
                 if (score > bestScore) {
                     bestScore = score;
@@ -100,7 +101,7 @@ function minimax(board, depth, isMaximizing) {
     //Null means the algorithm needs to keep further, as all terminal states are not found
     if (result !== null) {
         //Sends score for who wins this terminal state
-        return scores[result];
+        return [scores[result], depth];
     }
     //True: AI's turn, False: Players turn
     if (isMaximizing) {
@@ -111,11 +112,11 @@ function minimax(board, depth, isMaximizing) {
                     board[i][j] = "O";
                     let score = minimax(board, depth + 1, false);
                     board[i][j] = '';
-                    bestScore = Math.max(score, bestScore);
+                    bestScore = Math.max(score[0], bestScore);
                 }
             }
         }
-        return bestScore;
+        return [bestScore];
     } else {
         let bestScore = Infinity;
         for (let i = 0; i < 3; i++) {
@@ -124,10 +125,10 @@ function minimax(board, depth, isMaximizing) {
                     board[i][j] = "X";
                     let score = minimax(board, depth + 1, true);
                     board[i][j] = '';
-                    bestScore = Math.min(score, bestScore);
+                    bestScore = Math.min(score[0], bestScore);
                 }
             }
         }
-        return bestScore;
+        return [bestScore];
     }
 }
